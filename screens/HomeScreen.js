@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Alert } from 'react-native';
 import * as firebase from 'firebase';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
@@ -12,7 +12,7 @@ export default class HomeScreen extends React.Component {
   componentDidMount() {
     const { email, displayName } = firebase.auth().currentUser;
     this.setState({ email, displayName })
-    console.log(firebase.auth().currentUser)
+    console.log(displayName)
   }
 
   singOutUser = () => {
@@ -24,6 +24,9 @@ export default class HomeScreen extends React.Component {
     return (
       <View style={styles.container}>
         <Text style={{ marginTop: 30, color:'red' }}>Bem vindo de volta </Text>
+        
+        <Text>{this.state.displayName}</Text>
+
         <TouchableOpacity style={styles.containerSair} onPress={this.singOutUser}>
           <Text style={styles.textoSair}>Sair</Text>
         </TouchableOpacity>
