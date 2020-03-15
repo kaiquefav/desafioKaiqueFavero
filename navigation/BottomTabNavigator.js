@@ -3,7 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
 import PerfilScreen from '../screens/PerfilScreen';
-import CadastroEScreen from '../screens/CadastroEScreen';
+import CadastroEventoScreen from '../screens/CadastroEventoScreen';
 import Colors from '../constants/Colors';
 
 const BottomTab = createBottomTabNavigator();
@@ -41,8 +41,8 @@ export default function BottomTabNavigator({ navigation, route }) {
         }}
       />
       <BottomTab.Screen
-        name="CadastroE"
-        component={CadastroEScreen}
+        name="CadastroEvento"
+        component={CadastroEventoScreen}
         options={{
           title: 'Cadastro de Eventos',
           tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="fa" />,
@@ -60,7 +60,7 @@ function getHeaderTitle(route) {
       return 'Perfil';
     case 'Home':
       return 'Home';
-    case 'CadastroE':
+    case 'CadastroEvento':
       return 'Cadastro de Eventos';
   }
 }

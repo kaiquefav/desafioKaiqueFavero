@@ -1,13 +1,90 @@
-import * as React from 'react';
-import { StyleSheet, View, Text, Image, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import LoginForm from '../components/LoginForm'
-import { useNavigation } from '@react-navigation/native';
-import BottomTabNavigator from '../navigation/BottomTabNavigator'
+import React, { Component } from 'react';
+import {
+    StyleSheet, View, Text, Image, TextInput, TouchableOpacity, KeyboardAvoidingView,
+    TouchableWithoutFeedback, Keyboard, StatusBar
+} from 'react-native';
+import Color from '../constants/Colors'
+import * as firebase from 'firebase'
 
 
-const Stack = createStackNavigator();
+
+
+
+export default class LoginScreen extends React.Component {
+    state = {
+        email: "",
+        senha: "",
+        errorMessage: null
+    }
+
+    verificaLogin = async () => {
+        const { email, senha } = this.state
+    
+        try {
+          const user = await firebase.auth()
+            .signInWithEmailAndPassword(email, senha);
+            this.props.navigation.navigate('root')
+        }
+        catch (error) {
+            this.setState({ errorMessage: error.message })
+            console.log(this.state.errorMessage)
+        }
+      }
+
+    render() {
+        return (
+            <EsconderTeclado>
+                <KeyboardAvoidingView style={styles.container} behavior='position' keyboardVerticalOffset={-140}>
+                    <View>
+                        <StatusBar barStyle='dark-content'></StatusBar>
+                        <View>
+                            <Image style={styles.logo} resizeMode='center' source={require('../assets/images/logointro.png')} />
+                        </View>
+                        <View style={styles.errorContainer}>
+                            {this.state.errorMessage && <Text style={styles.error}>{this.state.errorMessage}</Text>}
+                        </View>
+                        <TextInput
+                            clearTextOnFocus={true}
+                            style={styles.entradaContainer}
+                            placeholder='Email'
+                            placeholderTextColor='#B3B3B3'
+                            autoCapitalize='none'
+                            returnKeyType='next'
+                            keyboardType='email-address'
+                            returnKeyType='done'
+                            autoCapitalize='none'
+                            autoCorrect={false}
+                            onChangeText={email => this.setState({ email })}
+                            value={this.state.email}
+                        />
+                        <TextInput
+                            style={styles.entradaContainer}
+                            placeholder='Senha'
+                            placeholderTextColor='#B3B3B3'
+                            autoCapitalize='none'
+                            secureTextEntry returnKeyType='done'
+                            onChangeText={senha => this.setState({ senha })}
+                            value={this.state.senha}
+                        />
+                        <View style={styles.botoesContainer}>
+                            <TouchableOpacity onPress={this.verificaLogin}
+                                style={styles.botaoEntrarContainer}>
+                                <Text style={styles.TextoBotao}>Entrar</Text>
+                            </TouchableOpacity>
+                            <View>
+                                <TouchableOpacity onPress={() => this.props.navigation.navigate('Cadastro')}
+                                    style={styles.botaoCContainer} >
+                                    <Text style={styles.TextoBotao2}>
+                                        Novo por aqui? <Text style={{ color: Color.roxomb }}>Cadastre-se!</Text></Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </View >
+                </KeyboardAvoidingView>
+            </EsconderTeclado>
+        )
+    }
+}
 
 const EsconderTeclado = ({ children }) => (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -15,51 +92,76 @@ const EsconderTeclado = ({ children }) => (
     </TouchableWithoutFeedback>
 )
 
-function CallForms() {
-    return (
-        <EsconderTeclado>
-            <KeyboardAvoidingView style={styles.container} behavior='padding'>
-                <View style={styles.logoContainer}>
-                    <Image style={styles.logo} resizeMode='center' source={require('../assets/images/logointro.png')} />
-                </View>
-                <View style={styles.formContainer}><LoginForm /></View>
-            </KeyboardAvoidingView>
-        </EsconderTeclado>
-    )
-}
-
-export default function LoginScreen(props) {
-    return (
-        <NavigationContainer>
-            <Stack.Navigator>
-                <Stack.Screen name="forms" component={CallForms} options={{headerShown:false}}/>
-                <Stack.Screen name="root" component={BottomTabNavigator} options={{headerShown:false }}/>
-            </Stack.Navigator>
-        </NavigationContainer>
-    )
-}
-
-
-
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
-        justifyContent: 'center',
         backgroundColor: '#e6e6e6'
     },
-    logoContainer: {
-        //backgroundColor:'red',
-        marginTop: 40
+    entradaContainer: {
+        height: 40,
+        width: 250,
+        backgroundColor: '#FFFFFF',
+        marginBottom: 10,
+        color: '#000',
+        paddingHorizontal: 10,
+        borderWidth: 0.5,
+        borderColor: Color.roxomb,
+        borderRadius: 7
+    },
+    botoesContainer: {
+        marginTop: 5,
+    },
+    botaoCContainer: {
+        marginTop: 5,
+        marginRight: 4,
+        height: 40,
+        width: 250,
+        borderRadius: 7
+    },
+    botaoEntrarContainer: {
+        marginTop: 5,
+        backgroundColor: Color.roxomb,
+        height: 40,
+        width: 250,
+        borderRadius: 7
+    },
+    errorContainer: {
+        width: 250,
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     logo: {
+        alignContent: 'center',
+        justifyContent: 'center',
+        marginTop: 130,
+        marginLeft: 16,
         width: 220,
         height: 230
     },
-    formContainer: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginTop: 20,
+    TextoBotao: {
+        color: '#FFFFFF',
+        alignSelf: 'center',
+        paddingVertical: 12,
+        fontWeight: '500',
+        fontSize: 15,
+        alignItems: 'center'
+    },
+    TextoBotao2: {
+        color: '#000',
+        alignSelf: 'center',
+        paddingVertical: 12,
+        fontWeight: '500',
+        fontSize: 15,
+        alignItems: 'center'
+    },
+    error: {
+        marginTop: 2,
+        marginBottom: 1,
+        color: 'red',
+        fontSize: 15,
+        fontWeight: '600',
+        textAlign: 'center'
     }
 });

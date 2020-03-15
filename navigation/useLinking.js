@@ -10,7 +10,7 @@ export default function (containerRef) {
         screens: {
           Perfil: 'Perfil',
           Home: 'Home',
-          CadastroE: 'CadastroE',
+          CadastroEvento: 'CadastroEvento',
         },
       },
     },
