@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Text, StyleSheet, Alert } from 'react-native';
+import { View, Text, StyleSheet, Alert, LayoutAnimation } from 'react-native';
 import * as firebase from 'firebase';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import Colors from '../constants/Colors'
 
 export default class HomeScreen extends React.Component {
   state = {
@@ -21,6 +22,7 @@ export default class HomeScreen extends React.Component {
   }
 
   render() {
+    LayoutAnimation.easeInEaseOut();
     return (
       <View style={styles.container}>
         <Text style={{ marginTop: 30, color:'red' }}>Bem vindo de volta </Text>
@@ -40,7 +42,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    backgroundColor: Colors.bgDefault,
   },
   containerSair: {
     alignItems: 'center',

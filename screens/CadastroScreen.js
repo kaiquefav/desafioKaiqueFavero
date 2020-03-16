@@ -1,10 +1,15 @@
 import React, { Component } from 'react';
 import {
   StyleSheet, View, Text, Image, TextInput, TouchableOpacity, KeyboardAvoidingView,
-  TouchableWithoutFeedback, Keyboard, StatusBar,
+  TouchableWithoutFeedback, Keyboard,
 } from 'react-native';
 import Color from '../constants/Colors'
-import * as firebase from 'firebase'
+import * as firebase from 'firebase';
+import { TextInputMask } from 'react-native-masked-text'
+import { validate } from '../components/ValidacoesUsuario'
+
+
+
 
 
 export default class CadastroScreen extends React.Component {
@@ -12,35 +17,33 @@ export default class CadastroScreen extends React.Component {
     nome: "",
     email: "",
     senha: "",
-    cidade:"",
+    cidade: "",
+    cpf: "",
     errorMessage: null
   }
 
   verificaCadastro = () => {
-    firebase
-      .auth()
-      .createUserWithEmailAndPassword(this.state.email, this.state.senha)
+    firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.senha)
       .then(infoUser => {
-        return infoUser.user.updateProfile({
-          displayName: this.state.nome
-          })
-      })
+        return infoUser.user.updateProfile({ displayName: this.state.nome }),
+        validate(this.state.nome, this.state.email, this.state.cidade, this.state.cpf)
+      }
+      )
       .catch(error => this.setState({ errorMessage: error.message }))
   }
-
 
   render() {
     return (
       <EsconderTeclado>
-        <KeyboardAvoidingView style={styles.container} behavior='position' keyboardVerticalOffset={60}>
+        <KeyboardAvoidingView style={styles.container} behavior='position' keyboardVerticalOffset={-105}>
           <View>
             <View style={styles.logoContainer}>
               <Image style={styles.logo} resizeMode='center' source={require('../assets/images/logo.png')} />
             </View>
-            <Text style={styles.cadastro}>Cadastro</Text>
             <View style={styles.errorContainer}>
               {this.state.errorMessage && <Text style={styles.error}>{this.state.errorMessage}</Text>}
             </View>
+
             <TextInput
               style={styles.entradaContainer}
               placeholder='Nome Completo'
@@ -52,6 +55,19 @@ export default class CadastroScreen extends React.Component {
               onChangeText={nome => this.setState({ nome })}
               value={this.state.nome}
             />
+            <TextInputMask
+              style={styles.entradaContainer}
+              placeholder='CPF'
+              placeholderTextColor='#B3B3B3'
+              type={'cpf'}
+              value={this.state.cpf}
+              onChangeText={text => {
+                this.setState({
+                  cpf: text
+                })
+              }}
+              ref={(ref) => this.cpfField = ref}
+            />
             <TextInput
               style={styles.entradaContainer}
               placeholder='Cidade'
@@ -59,7 +75,7 @@ export default class CadastroScreen extends React.Component {
               autoCapitalize='words'
               returnKeyType='done'
               keyboardType='default'
-              autoCorrect={false}
+              autoCorrect={true}
               onChangeText={cidade => this.setState({ cidade })}
               value={this.state.cidade}
             />
@@ -85,8 +101,18 @@ export default class CadastroScreen extends React.Component {
               onChangeText={senha => this.setState({ senha })}
               value={this.state.senha}
             />
+            <TextInput
+              style={styles.entradaContainer}
+              placeholder='Confirme sua Senha'
+              placeholderTextColor='#B3B3B3'
+              autoCapitalize='none'
+              secureTextEntry
+              returnKeyType='done'
+              onChangeText={senha => this.setState({ senha })}
+              value={this.state.senha}
+            />
             <View style={styles.botoesContainer}>
-              <TouchableOpacity onPress={this.verificaCadastro}
+              <TouchableOpacity onPress={() => { this.verificaCadastro() }}
                 style={styles.botaoEntrarContainer}>
                 <Text style={styles.TextoBotao}>Cadastrar</Text>
               </TouchableOpacity>
@@ -104,12 +130,10 @@ const EsconderTeclado = ({ children }) => (
   </TouchableWithoutFeedback>
 )
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    backgroundColor: '#e6e6e6'
+    backgroundColor: '#e6e6e6',
   },
   logoContainer: {
     alignItems: 'center',
@@ -119,13 +143,14 @@ const styles = StyleSheet.create({
     height: 40,
     width: 250,
     backgroundColor: '#FFFFFF',
-    marginTop: 20,
+    marginTop: 10,
     marginBottom: 10,
+    alignSelf: 'center',
     color: '#000',
     paddingHorizontal: 10,
     borderWidth: 0.5,
     borderColor: Color.roxomb,
-    borderRadius: 7
+    borderRadius: 7,
   },
   botoesContainer: {
     marginTop: 20,
@@ -133,12 +158,14 @@ const styles = StyleSheet.create({
   botaoCContainer: {
     marginTop: 5,
     marginRight: 4,
+    alignSelf: 'center',
     height: 40,
     width: 250,
     borderRadius: 7
   },
   botaoEntrarContainer: {
     marginTop: 5,
+    alignSelf: 'center',
     backgroundColor: Color.roxomb,
     height: 40,
     width: 250,
@@ -147,21 +174,16 @@ const styles = StyleSheet.create({
   errorContainer: {
     width: 250,
     alignItems: 'center',
-    justifyContent: 'center'
-  },
-  cadastro: {
-    alignItems: 'center',
-    textAlign: 'center',
     justifyContent: 'center',
-    fontSize: 40,
-    marginBottom: 15,
+    alignContent: 'center',
+    alignSelf: 'center',
   },
   logo: {
     alignContent: 'center',
     justifyContent: 'center',
     alignItems: 'center',
-    width: 120,
-    height: 150
+    width: 90,
+    height: 120
   },
   TextoBotao: {
     color: '#FFFFFF',
@@ -185,6 +207,24 @@ const styles = StyleSheet.create({
     color: 'red',
     fontSize: 15,
     fontWeight: '600',
-    textAlign: 'center'
-  }
+    textAlign: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignContent: 'center',
+    alignSelf: 'center',
+  },
+  BotaoVoltar: {
+    position: 'absolute',
+    top: 30,
+    left: 15,
+    width: 25,
+    height: 25,
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignContent: 'center',
+    alignSelf: 'center',
+  },
+  imgCarregando: {
+    marginTop: 20
+  },
 });

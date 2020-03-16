@@ -19,11 +19,12 @@ export default function BottomTabNavigator({ navigation, route }) {
   return (
     <BottomTab.Navigator initialRouteName={INITIAL_ROUTE_NAME}
     tabBarOptions={{
-      activeBackgroundColor: 'black',
+      activeBackgroundColor: '#c9c9c9',
       inactiveBackgroundColor:'#c9c9c9',
-      inactiveTintColor:'black',
-      activeTintColor: '#c9c9c9'      
-    }}>
+      inactiveTintColor:'#666666',
+      activeTintColor: '#000',
+      style: {height:40}
+      }}>
       <BottomTab.Screen
         name="Perfil"
         component={PerfilScreen}

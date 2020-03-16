@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
+import Colors from '../constants/Colors'
 
 export default function PerfilScreen() {
   return (
@@ -14,7 +15,7 @@ export default function PerfilScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#999999',
+    backgroundColor: Colors.bgDefault,
   },
   contentContainer: {
     paddingTop: 30,
