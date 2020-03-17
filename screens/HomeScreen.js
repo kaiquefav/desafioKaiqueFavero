@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, Image, ActivityIndicator, FlatList, SafeAreaView, ViewBase, StatusBar } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, ActivityIndicator, FlatList, SafeAreaView, ViewBase, StatusBar } from 'react-native';
 import * as firebase from 'firebase';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -9,19 +9,25 @@ import Constants from 'expo-constants';
 import Layout from '../constants/Layout'
 import App from '../App'
 
+
+function getDetails(descricao, nomeE, path) {
+  console.log(descricao, nomeE)
+  path.navigation.navigate('Detalhes', {
+    descricaoE: descricao,
+    nomeE: nomeE
+  });
+
+}
+
 function Item({ nomeE, nomeOrg, cidadeE, descricao, data, valor, path }) {
+  var i;
   return (
     <View style={styles.listContainer}>
-      <TouchableOpacity style={styles.buttonContainer} onPress={() => {
-        path.navigation.navigate('Detalhes', {
-          descricao: descricao,
-        });
-      }}>
+      <TouchableOpacity style={styles.buttonContainer} onPress={() => { getDetails(descricao, nomeE, path) }} >
         <Text style={styles.tituloEvento}>{nomeE}</Text>
         <Text style={styles.tituloInfosEvento}>Data: <Text style={styles.infosEvento}>{data}</Text></Text>
         <Text style={styles.tituloInfosEvento}>Local: <Text style={styles.infosEvento}>{cidadeE}</Text></Text>
         <Text style={styles.tituloInfosEvento}>Por: <Text style={styles.infosEvento}>{nomeOrg}</Text></Text>
-        <Text style={styles.tituloDescricaoEvento}>Sobre: <Text style={styles.descricaoEvento}>{descricao}</Text></Text>
         <Text style={styles.tituloInfosEvento}>R$<Text style={styles.valorEvento}>{valor},00</Text></Text>
       </TouchableOpacity>
     </View >
@@ -35,12 +41,13 @@ export default class HomeScreen extends React.Component {
     this.state = {
       eventos: [],
       ready: false,
+      index: '',
     };
   }
 
   getqteData() {
     var aux = 0;
-    console.log('aux é: ' + aux)
+    // console.log('aux é: ' + aux)
     let Current = this;
     var ref = firebase.database().ref('events')
     ref.on('value', snapshot => {
@@ -95,10 +102,7 @@ export default class HomeScreen extends React.Component {
     )
   }
 
-  singOutUser = () => {
-    firebase.auth().signOut
-    this.props.navigation.navigate('Login')
-  }
+
 
   render() {
 
@@ -106,7 +110,7 @@ export default class HomeScreen extends React.Component {
     if (this.state.ready === true) {
 
       const { eventos } = this.state
-      console.log(this.state.eventos.descricao)
+      //console.log(this.state.eventos[0].descricao)
       // var descricaoEvento = this.state.eventos.descricao
 
     }
@@ -127,7 +131,8 @@ export default class HomeScreen extends React.Component {
                 descricao={item.descricao}
                 data={item.data}
                 valor={item.valor}
-                path={this.props} />}
+                path={this.props}
+              />}
               keyExtractor={item => item.id}
             />
           </ScrollView>

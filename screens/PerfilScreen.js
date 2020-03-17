@@ -93,7 +93,7 @@ export default class PerfilScreen extends React.Component {
 
   singOutUser = () => {
     firebase.auth().signOut
-    this.props.navigation.navigate('Login')
+    this.props.navigation.replace('Login')
   }
 
   render() {
