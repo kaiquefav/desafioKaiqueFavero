@@ -36,6 +36,7 @@ export default class CadastroEventoScreen extends React.Component {
   render() {
     return (
       <ScrollView style={styles.container}>
+        <StatusBar hidden={true}></StatusBar>
         <EsconderTeclado>
           <KeyboardAvoidingView behavior='position' keyboardVerticalOffset={-80}>
             <View>
@@ -91,7 +92,7 @@ export default class CadastroEventoScreen extends React.Component {
                 value={this.state.descricao}
               />
               <DatePicker
-                style={{ marginLeft: 63, marginTop: 10, width: 200, borderWidth: 0.8, borderColor: '#a6a6a6' }}
+                style={{ marginLeft: 63, marginTop: 10, width: 250, borderWidth: 0.8, borderColor: '#a6a6a6' }}
                 date={this.state.data} //initial date from state
                 mode="date" //The enum of date, datetime and time
                 placeholder="Selecione a data do evento"
@@ -182,7 +183,7 @@ const styles = StyleSheet.create({
   botaoEntrarContainer: {
     marginTop: 5,
     alignSelf: 'center',
-    backgroundColor: Color.roxomb,
+    backgroundColor: '#000',
     height: 40,
     width: 250,
     borderRadius: 7

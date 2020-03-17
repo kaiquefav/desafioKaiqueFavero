@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {
   StyleSheet, View, Text, Image, TextInput, TouchableOpacity, KeyboardAvoidingView,
-  TouchableWithoutFeedback, Keyboard,
+  TouchableWithoutFeedback, Keyboard, StatusBar
 } from 'react-native';
 import Color from '../constants/Colors'
 import * as firebase from 'firebase';
@@ -15,6 +15,7 @@ function addUser(nome, email, cidade, cpf) {
     email: email,
     cidade: cidade,
     cpf: cpf,
+    //eventos:[],
   })
 }
 
@@ -26,6 +27,7 @@ export default class CadastroScreen extends React.Component {
     senha: "",
     cidade: "",
     cpf: "",
+    //eventos: "",
     errorMessage: null
   }
 
@@ -54,6 +56,7 @@ export default class CadastroScreen extends React.Component {
       <EsconderTeclado>
         <KeyboardAvoidingView style={styles.container} behavior='position' keyboardVerticalOffset={-105}>
           <View>
+            <StatusBar hidden={true}></StatusBar>
             <View style={styles.logoContainer}>
               <Image style={styles.logo} resizeMode='center' source={require('../assets/images/logo.png')} />
             </View>
@@ -183,7 +186,7 @@ const styles = StyleSheet.create({
   botaoEntrarContainer: {
     marginTop: 5,
     alignSelf: 'center',
-    backgroundColor: Color.roxomb,
+    backgroundColor: '#000',
     height: 40,
     width: 250,
     borderRadius: 7

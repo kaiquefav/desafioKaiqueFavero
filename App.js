@@ -44,7 +44,7 @@ export default function App() {
         <Stack.Screen name="Login" component={LoginScreen} options={{ gestureEnabled: false, headerShown: false }} />
         <Stack.Screen name="Cadastro" component={CadastroScreen} options={{ gestureEnabled: false, headerBackTitleVisible: false, headerTitleStyle: { fontWeight: '800', fontSize: 20, color: '#000' }, headerStyle: { backgroundColor: Colors.bgDefault }, headerBackTitleStyle: { color: '#FFF' } }} />
         <Stack.Screen name="root" component={BottomTabNavigator} options={{ gestureEnabled: false, headerShown: false }} />
-        <Stack.Screen name="DetalhesScreen" component={DetalhesScreen} options={{ gestureEnabled: false, headerBackTitleVisible: false, headerTitleStyle: { fontWeight: '800', fontSize: 20, color: '#000' }, headerStyle: { backgroundColor: Colors.bgDefault }, headerBackTitleStyle: { color: '#FFF' } }} />
+        <Stack.Screen name="Detalhes" component={DetalhesScreen} options={{ gestureEnabled: false, headerBackTitleVisible: false, headerTitleStyle: { fontWeight: '800', fontSize: 20, color: '#000' }, headerStyle: { backgroundColor: Colors.bgDefault }, headerBackTitleStyle: { color: '#FFF' } }} />
       </Stack.Navigator>
     </NavigationContainer>
   )

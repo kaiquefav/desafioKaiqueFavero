@@ -33,7 +33,7 @@ export default class LoginScreen extends React.Component {
             <EsconderTeclado>
                 <KeyboardAvoidingView style={styles.container} behavior='position' keyboardVerticalOffset={-140}>
                     <View>
-                        <StatusBar barStyle='dark-content'></StatusBar>
+                        <StatusBar hidden={true}></StatusBar>
                         <View>
                             <Image style={styles.logo} resizeMode='center' source={require('../assets/images/logointro.png')} />
                         </View>
@@ -47,7 +47,6 @@ export default class LoginScreen extends React.Component {
                                 placeholder='Email'
                                 placeholderTextColor='#B3B3B3'
                                 autoCapitalize='none'
-                                returnKeyType='next'
                                 keyboardType='email-address'
                                 returnKeyType='done'
                                 autoCapitalize='none'
@@ -122,7 +121,7 @@ const styles = StyleSheet.create({
     },
     botaoEntrarContainer: {
         marginTop: 5,
-        backgroundColor: Color.roxomb,
+        backgroundColor: '#000',
         height: 40,
         width: 250,
         borderRadius: 7
