@@ -6,10 +6,17 @@ import {
 import Color from '../constants/Colors'
 import * as firebase from 'firebase';
 import { TextInputMask } from 'react-native-masked-text'
-import { validate } from '../components/ValidacoesUsuario'
+import validate from '../components/ValidacoesUsuario'
 
-
-
+function addUser(nome, email, cidade, cpf) {
+  let newMail = email.substring(0, email.indexOf('@')) //setando ID do usuário como começo do email.
+  firebase.database().ref('users/' + newMail).set({
+    name: nome,
+    email: email,
+    cidade: cidade,
+    cpf: cpf,
+  })
+}
 
 
 export default class CadastroScreen extends React.Component {
@@ -23,10 +30,20 @@ export default class CadastroScreen extends React.Component {
   }
 
   verificaCadastro = () => {
+    var ret = validate(this.state.nome, this.state.email, this.state.cidade, this.state.cpf, this.state.senha)
+    if (ret == true) {
+      this.verificaCadastro2(ret)
+    }
+    else {
+      console.log('setando ret')
+      this.setState({ errorMessage: ret })
+    }
+  }
+  verificaCadastro2 = (ret) => {
     firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.senha)
       .then(infoUser => {
         return infoUser.user.updateProfile({ displayName: this.state.nome }),
-        validate(this.state.nome, this.state.email, this.state.cidade, this.state.cpf)
+          addUser(this.state.nome, this.state.email, this.state.cidade, this.state.cpf), console.log('addeu user')
       }
       )
       .catch(error => this.setState({ errorMessage: error.message }))
@@ -101,7 +118,7 @@ export default class CadastroScreen extends React.Component {
               onChangeText={senha => this.setState({ senha })}
               value={this.state.senha}
             />
-            <TextInput
+            {/* <TextInput
               style={styles.entradaContainer}
               placeholder='Confirme sua Senha'
               placeholderTextColor='#B3B3B3'
@@ -110,7 +127,7 @@ export default class CadastroScreen extends React.Component {
               returnKeyType='done'
               onChangeText={senha => this.setState({ senha })}
               value={this.state.senha}
-            />
+            /> */}
             <View style={styles.botoesContainer}>
               <TouchableOpacity onPress={() => { this.verificaCadastro() }}
                 style={styles.botaoEntrarContainer}>

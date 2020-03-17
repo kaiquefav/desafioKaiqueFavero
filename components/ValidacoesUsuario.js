@@ -1,36 +1,11 @@
-import { TextInputMask } from 'react-native-masked-text'
 import React, { Component } from 'react';
 import { Alert } from 'react-native';
+import firebase from 'firebase';
 
-export default function validate(nome, email, cidade, cpf) {
-    const cpfIsValid = this.cpfField.isValid()
-    console.log(cpfIsValid) // boolean
-    if (cpfIsValid == true) {
-        const unmasked = this.cpfField.getRawValue()
-        addUser(nome, email, cidade, unmasked)
+export default function validate(nome, email, cidade, cpf, senha) {
+    if ((nome == '') || (email == '') || (cidade == '') || (cpf == '') || (senha == ''))
+        return '\nFill in all the fields!'
+    else
         return true
-    }
-    else {
-        Alert('CPF INVALIDO')
-        return false
-    }
+
 }
-
-
-function addUser(nome, email, cidade, cpf) {
-    let newMail = email.substring(0, email.indexOf('@')) //setando ID do usuário como começo do email.
-    firebase.database().ref('users/' + newMail).set({
-      name: nome,
-      email: email,
-      cidade: cidade,
-      cpf: cpf,
-    })
-  }
-
-
-
-
-
-
-
-

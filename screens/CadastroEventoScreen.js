@@ -117,7 +117,7 @@ export default class CadastroEventoScreen extends React.Component {
                 style={styles.entradaContainer}
                 placeholder='Valor'
                 placeholderTextColor='#B3B3B3'
-                keyboardType='decimal-pad'
+                keyboardType='number-pad'
                 returnKeyType='done'
                 onChangeText={valor => this.setState({ valor })}
                 value={this.state.valor}

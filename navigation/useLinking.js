@@ -11,6 +11,7 @@ export default function (containerRef) {
           Perfil: 'Perfil',
           Home: 'Home',
           CadastroEvento: 'CadastroEvento',
+          DetalhesScreen: 'DetalhesScreen',
         },
       },
     },

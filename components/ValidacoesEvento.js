@@ -27,7 +27,7 @@ function addEvento(id, nomeE, nomeOrg, cidadeE, descricao, data, valor) {
 export function validate(nomeOrg, nomeE, cidadeE, descricao, data, valor) {
     if ((nomeOrg == '') || (nomeE == '') || (cidadeE == '') || (descricao == '') || (data == '') || (valor == '')) {
         //alert('Preencha todos os campos!')
-        return 'Preencha todos os campos!'
+        return 'Fill in all the fields!'
     }
     else {
         id = Math.ceil(Math.random() * 1000000)
