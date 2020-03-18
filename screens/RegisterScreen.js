@@ -1,51 +1,48 @@
 import React, { Component } from 'react';
-import {
-  StyleSheet, View, Text, Image, TextInput, TouchableOpacity, KeyboardAvoidingView,
-  TouchableWithoutFeedback, Keyboard, StatusBar
-} from 'react-native';
+import { StyleSheet, View, Text, Image, TextInput, TouchableOpacity, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, StatusBar } from 'react-native';
 import Color from '../constants/Colors'
-import * as firebase from 'firebase';
+import * as Firebase from 'firebase';
 import { TextInputMask } from 'react-native-masked-text'
 import validate from '../components/ValidacoesUsuario'
 
-function addUser(nome, email, cidade, cpf) {
+function addUser(name, email, city, cpf) {
   let newMail = email.substring(0, email.indexOf('@')) //setando ID do usuário como começo do email.
-  firebase.database().ref('users/' + newMail).set({
-    name: nome,
+  Firebase.database().ref('users/' + newMail).set({
+    name: name,
     email: email,
-    cidade: cidade,
+    city: city,
     cpf: cpf,
     //eventos:[],
   })
 }
 
 
-export default class CadastroScreen extends React.Component {
+export default class RegisterScreen extends React.Component {
   state = {
-    nome: "",
+    name: "",
     email: "",
-    senha: "",
-    cidade: "",
+    password: "",
+    city: "",
     cpf: "",
     //eventos: "",
     errorMessage: null
   }
 
-  verificaCadastro = () => {
-    var ret = validate(this.state.nome, this.state.email, this.state.cidade, this.state.cpf, this.state.senha)
+  registerVerify = () => {
+    var ret = validate(this.state.name, this.state.email, this.state.city, this.state.cpf, this.state.password)
     if (ret == true) {
-      this.verificaCadastro2(ret)
+      this.registerVerify2()
     }
     else {
-      console.log('setando ret')
       this.setState({ errorMessage: ret })
     }
   }
-  verificaCadastro2 = (ret) => {
-    firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.senha)
+  registerVerify2 = () => {
+    Firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password)
       .then(infoUser => {
-        return infoUser.user.updateProfile({ displayName: this.state.nome }),
-          addUser(this.state.nome, this.state.email, this.state.cidade, this.state.cpf), console.log('addeu user')
+        return infoUser.user.updateProfile({ displayName: this.state.name }),
+          addUser(this.state.name, this.state.email, this.state.city, this.state.cpf),
+          this.props.navigation.replace('Login');
       }
       )
       .catch(error => this.setState({ errorMessage: error.message }))
@@ -65,18 +62,18 @@ export default class CadastroScreen extends React.Component {
             </View>
 
             <TextInput
-              style={styles.entradaContainer}
+              style={styles.inputContainer}
               placeholder='Nome Completo'
               placeholderTextColor='#B3B3B3'
               autoCapitalize='words'
               returnKeyType='done'
               keyboardType='default'
               autoCorrect={false}
-              onChangeText={nome => this.setState({ nome })}
-              value={this.state.nome}
+              onChangeText={name => this.setState({ name })}
+              value={this.state.name}
             />
             <TextInputMask
-              style={styles.entradaContainer}
+              style={styles.inputContainer}
               placeholder='CPF'
               placeholderTextColor='#B3B3B3'
               type={'cpf'}
@@ -89,18 +86,18 @@ export default class CadastroScreen extends React.Component {
               ref={(ref) => this.cpfField = ref}
             />
             <TextInput
-              style={styles.entradaContainer}
+              style={styles.inputContainer}
               placeholder='Cidade'
               placeholderTextColor='#B3B3B3'
               autoCapitalize='words'
               returnKeyType='done'
               keyboardType='default'
               autoCorrect={true}
-              onChangeText={cidade => this.setState({ cidade })}
-              value={this.state.cidade}
+              onChangeText={city => this.setState({ city })}
+              value={this.state.city}
             />
             <TextInput
-              style={styles.entradaContainer}
+              style={styles.inputContainer}
               placeholder='Email'
               placeholderTextColor='#B3B3B3'
               clearTextOnFocus={true}
@@ -112,17 +109,17 @@ export default class CadastroScreen extends React.Component {
               value={this.state.email}
             />
             <TextInput
-              style={styles.entradaContainer}
+              style={styles.inputContainer}
               placeholder='Senha'
               placeholderTextColor='#B3B3B3'
               autoCapitalize='none'
               secureTextEntry
               returnKeyType='done'
-              onChangeText={senha => this.setState({ senha })}
-              value={this.state.senha}
+              onChangeText={password => this.setState({ password })}
+              value={this.state.password}
             />
             {/* <TextInput
-              style={styles.entradaContainer}
+              style={styles.inputContainer}
               placeholder='Confirme sua Senha'
               placeholderTextColor='#B3B3B3'
               autoCapitalize='none'
@@ -131,10 +128,10 @@ export default class CadastroScreen extends React.Component {
               onChangeText={senha => this.setState({ senha })}
               value={this.state.senha}
             /> */}
-            <View style={styles.botoesContainer}>
-              <TouchableOpacity onPress={() => { this.verificaCadastro() }}
-                style={styles.botaoEntrarContainer}>
-                <Text style={styles.TextoBotao}>Cadastrar</Text>
+            <View style={styles.buttonsContainer}>
+              <TouchableOpacity onPress={() => { this.registerVerify() }}
+                style={styles.registerButtonContainer}>
+                <Text style={styles.textButton}>Cadastrar</Text>
               </TouchableOpacity>
             </View>
           </View >
@@ -159,7 +156,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
-  entradaContainer: {
+  inputContainer: {
     height: 40,
     width: 250,
     backgroundColor: '#FFFFFF',
@@ -172,18 +169,10 @@ const styles = StyleSheet.create({
     borderColor: Color.roxomb,
     borderRadius: 7,
   },
-  botoesContainer: {
+  buttonsContainer: {
     marginTop: 20,
   },
-  botaoCContainer: {
-    marginTop: 5,
-    marginRight: 4,
-    alignSelf: 'center',
-    height: 40,
-    width: 250,
-    borderRadius: 7
-  },
-  botaoEntrarContainer: {
+  registerButtonContainer: {
     marginTop: 5,
     alignSelf: 'center',
     backgroundColor: '#000',
@@ -205,16 +194,8 @@ const styles = StyleSheet.create({
     width: 90,
     height: 120
   },
-  TextoBotao: {
+  textButton: {
     color: '#FFFFFF',
-    alignSelf: 'center',
-    paddingVertical: 12,
-    fontWeight: '500',
-    fontSize: 15,
-    alignItems: 'center'
-  },
-  TextoBotao2: {
-    color: '#000',
     alignSelf: 'center',
     paddingVertical: 12,
     fontWeight: '500',
@@ -232,19 +213,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignContent: 'center',
     alignSelf: 'center',
-  },
-  BotaoVoltar: {
-    position: 'absolute',
-    top: 30,
-    left: 15,
-    width: 25,
-    height: 25,
-    alignItems: 'center',
-    justifyContent: 'center',
-    alignContent: 'center',
-    alignSelf: 'center',
-  },
-  imgCarregando: {
-    marginTop: 20
   },
 });

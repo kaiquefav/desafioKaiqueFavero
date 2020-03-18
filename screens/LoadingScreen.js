@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, ActivityIndicator, Alert, StatusBar } from 'react-native';
 import * as firebase from 'firebase';
+import Colors from '../constants/Colors'
 
 
 
@@ -30,6 +31,7 @@ export default class LoadingScreen extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor:Colors.bgDefault,
         justifyContent: 'center',
         alignItems: 'center'
     },

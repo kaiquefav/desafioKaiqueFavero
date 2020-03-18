@@ -5,30 +5,34 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { CommonActions } from '@react-navigation/native';
 import Colors from '../constants/Colors'
-import Constants from 'expo-constants';
-import Layout from '../constants/Layout'
 import App from '../App'
 
 
-function getDetails(descricao, nomeE, path) {
-  console.log(descricao, nomeE)
+function getDetails(description, eventName, orgName, eventCity, currentDate, url, price, path) {
   path.navigation.navigate('Detalhes', {
-    descricaoE: descricao,
-    nomeE: nomeE
+    description: description,
+    eventName: eventName,
+    orgName: orgName,
+    eventCity: eventCity,
+    currentDate: currentDate,
+    url: url,
+    price: price,
   });
 
 }
 
-function Item({ nomeE, nomeOrg, cidadeE, descricao, data, valor, path }) {
-  var i;
+function Item({ eventName, orgName, eventCity, description, currentDate, url, price, path }) {
+
   return (
+    
     <View style={styles.listContainer}>
-      <TouchableOpacity style={styles.buttonContainer} onPress={() => { getDetails(descricao, nomeE, path) }} >
-        <Text style={styles.tituloEvento}>{nomeE}</Text>
-        <Text style={styles.tituloInfosEvento}>Data: <Text style={styles.infosEvento}>{data}</Text></Text>
-        <Text style={styles.tituloInfosEvento}>Local: <Text style={styles.infosEvento}>{cidadeE}</Text></Text>
-        <Text style={styles.tituloInfosEvento}>Por: <Text style={styles.infosEvento}>{nomeOrg}</Text></Text>
-        <Text style={styles.tituloInfosEvento}>R$<Text style={styles.valorEvento}>{valor},00</Text></Text>
+      <TouchableOpacity style={styles.buttonContainer} onPress={() => { getDetails(description, eventName, orgName, eventCity, currentDate, url, price, path) }} >
+        <Image style={styles.eventImage} resizeMode='cover' source={{ uri: url }} />
+        <Text style={styles.eventTitle}>{eventName}</Text>
+        <Text style={styles.eventInfoTitle}>Data: <Text style={styles.eventInfos}>{currentDate}</Text></Text>
+        <Text style={styles.eventInfoTitle}>Local: <Text style={styles.eventInfos}>{eventCity}</Text></Text>
+        <Text style={styles.eventInfoTitle}>Organizado Por: <Text style={styles.eventInfos}>{orgName}</Text></Text>
+        <View style={styles.priceContainer}><Text style={styles.eventPriceTitle}>R$<Text style={styles.eventPrice}>{price},00</Text></Text></View>
       </TouchableOpacity>
     </View >
   );
@@ -39,20 +43,19 @@ export default class HomeScreen extends React.Component {
     super();
 
     this.state = {
-      eventos: [],
+      events: [],
       ready: false,
-      index: '',
     };
   }
 
-  getqteData() {
+  GetQtData() {
     var aux = 0;
     // console.log('aux é: ' + aux)
     let Current = this;
     var ref = firebase.database().ref('events')
     ref.on('value', snapshot => {
       aux = snapshot.numChildren()
-      if (this.state.eventos.length == aux) {
+      if (this.state.events.length == aux) {
         Current.setState({ ready: true })
       }
       ;
@@ -62,20 +65,22 @@ export default class HomeScreen extends React.Component {
 
   componentWillMount() {
     let event = [];
-    let Current = this;
+    let current = this;
     var ref = firebase.database().ref('events')
     ref.on('child_added', snapshot => {
       event.push({
         id: snapshot.key,
-        cidadeE: snapshot.val().cidadeE,
-        data: snapshot.val().data,
-        descricao: snapshot.val().descricao,
-        nomeE: snapshot.val().nomeE,
-        nomeOrg: snapshot.val().nomeOrg,
-        valor: snapshot.val().valor,
+        eventCity: snapshot.val().eventCity,
+        currentDate: snapshot.val().currentDate,
+        description: snapshot.val().description,
+        eventName: snapshot.val().eventName,
+        orgName: snapshot.val().orgName,
+        url: snapshot.val().url,
+        price: snapshot.val().price,
       });
-      Current.setState({ eventos: event })
-      this.getqteData()
+      //console.log(event)
+      current.setState({ events: event })
+      this.GetQtData()
 
     }
     )
@@ -83,35 +88,34 @@ export default class HomeScreen extends React.Component {
 
   componentDidMount() {
     let event = [];
-    let Current = this;
+    let current = this;
     var ref = firebase.database().ref('events')
     ref.on('child_added', snapshot => {
       event.push({
         id: snapshot.key,
-        cidadeE: snapshot.val().cidadeE,
-        data: snapshot.val().data,
-        descricao: snapshot.val().descricao,
-        nomeE: snapshot.val().nomeE,
-        nomeOrg: snapshot.val().nomeOrg,
-        valor: snapshot.val().valor,
+        eventCity: snapshot.val().eventCity,
+        currentDate: snapshot.val().currentDate,
+        description: snapshot.val().description,
+        eventName: snapshot.val().eventName,
+        orgName: snapshot.val().orgName,
+        url: snapshot.val().url,
+        price: snapshot.val().price,
       });
-      Current.setState({ eventos: event })
-      this.getqteData()
+      current.setState({ events: event })
+      this.GetQtData()
 
     }
     )
   }
 
-
-
   render() {
 
-    //console.log(this.eventos)
+    //console.log(this.events)
     if (this.state.ready === true) {
 
-      const { eventos } = this.state
-      //console.log(this.state.eventos[0].descricao)
-      // var descricaoEvento = this.state.eventos.descricao
+      const { events } = this.state
+      //console.log(this.state.events[0].description)
+      // var EventDescription = this.state.events.description
 
     }
     return (
@@ -119,18 +123,19 @@ export default class HomeScreen extends React.Component {
       this.state.ready ?
         <SafeAreaView style={styles.container}>
           <StatusBar hidden={true}></StatusBar>
-          <Image style={styles.logoContainer} resizeMode='center' source={require('../assets/images/logo.png')} />
-          <View style={styles.tituloContainer}><Text style={styles.titulo}>Eventos</Text></View>
+          <Image style={styles.logoContainer} resizeMode='contain' source={require('../assets/images/logo.png')} />
+          <View style={styles.lineSeparate}><Text></Text></View>
           <ScrollView>
             <FlatList
-              data={this.state.eventos}
+              data={this.state.events}
               renderItem={({ item }) => <Item
-                nomeE={item.nomeE}
-                nomeOrg={item.nomeOrg}
-                cidadeE={item.cidadeE}
-                descricao={item.descricao}
-                data={item.data}
-                valor={item.valor}
+                eventName={item.eventName}
+                orgName={item.orgName}
+                eventCity={item.eventCity}
+                description={item.description}
+                currentDate={item.currentDate}
+                url={item.url}
+                price={item.price}
                 path={this.props}
               />}
               keyExtractor={item => item.id}
@@ -148,27 +153,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.bgDefault,
   },
-  container2: {
-    width: 200,
-    height: 200,
-    backgroundColor: 'red',
-  },
-  tituloContainer: {
-    justifyContent: 'center',
-    alignContent: 'center',
+  lineSeparate: {
+    height: 0.5,
     backgroundColor: '#000',
-    marginBottom: 10,
+    marginTop: 5,
   },
   loadingContainer: {
-    backgroundColor: Colors.bgDefault,
+    backgroundColor: '#FFF',
     alignSelf: 'center',
     marginVertical: 300,
-  },
-  titulo: {
-    fontSize: 35,
-    fontWeight: '500',
-    alignSelf: 'center',
-    color: '#FFF',
   },
   logoContainer: {
     alignSelf: 'center',
@@ -185,11 +178,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     alignContent: 'center',
-    backgroundColor: '#F2F2F2',
+    backgroundColor: '#FFF',
     borderRadius: 9,
     borderColor: '#000',
-    borderWidth: 0.5,
-    shadowColor: '#000',
     shadowOpacity: 0.2,
     shadowRadius: 1,
     shadowOffset: {
@@ -203,7 +194,11 @@ const styles = StyleSheet.create({
     width: 300,
     marginVertical: 10,
   },
-  tituloEvento: {
+  priceContainer: {
+    alignSelf: 'flex-end',
+    marginRight: 8,
+  },
+  eventTitle: {
     fontSize: 25,
     alignSelf: 'center',
     color: '#000',
@@ -211,50 +206,39 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     marginRight: 8,
     marginLeft: 8,
+    marginTop: 8,
   },
-  tituloInfosEvento: {
+  eventInfoTitle: {
     fontSize: 15,
     marginLeft: 8,
     marginRight: 8,
     fontWeight: '600',
     color: '#000',
   },
-  infosEvento: {
+  eventPriceTitle: {
     fontSize: 15,
-    marginLeft: 8,
-    marginRight: 8,
-    fontWeight: '300',
-    color: '#000',
-  },
-  dataEvento: {
-    fontSize: 18,
-    marginLeft: 8,
-    marginRight: 8,
-    color: '#000',
-  },
-  tituloDescricaoEvento: {
-    fontSize: 15,
-    alignSelf: 'flex-end',
-    marginRight: 8,
-    marginLeft: 8,
     fontWeight: '600',
     color: '#000',
   },
-  descricaoEvento: {
-    fontSize: 12,
-    alignSelf: 'flex-end',
+  eventInfos: {
+    fontSize: 15,
     marginRight: 8,
-    marginLeft: 8,
     fontWeight: '300',
     color: '#000',
   },
-  valorEvento: {
+  eventPrice: {
+    color:'green',
     fontSize: 15,
-    marginTop: 10,
-    marginLeft: 8,
-    marginRight: 8,
-    fontWeight: '300',
+    fontWeight: '600',
     color: 'green',
+  },
+  eventImage: {
+    flexWrap: 'wrap',
+    borderRadius: 9,
+    height: 100,
+    marginTop: 5,
+    marginLeft: 10,
+    marginRight: 10,
   },
 
 });

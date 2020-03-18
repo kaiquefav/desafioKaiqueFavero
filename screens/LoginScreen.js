@@ -1,49 +1,45 @@
 import React, { Component } from 'react';
-import {
-    StyleSheet, View, Text, Image, TextInput, TouchableOpacity, KeyboardAvoidingView,
-    TouchableWithoutFeedback, Keyboard, StatusBar, LayoutAnimation
-} from 'react-native';
+import { StyleSheet, View, Text, Image, TextInput, TouchableOpacity, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, StatusBar } from 'react-native';
 import Color from '../constants/Colors'
 import * as firebase from 'firebase'
 
 export default class LoginScreen extends React.Component {
     state = {
         email: "",
-        senha: "",
+        password: "",
         errorMessage: null
     }
 
-    verificaLogin = async () => {
-        const { email, senha } = this.state
+    LoginVerify = async () => {
+        const { email, password } = this.state
 
         try {
-            const user = await firebase.auth()
-                .signInWithEmailAndPassword(email, senha);
-            this.props.navigation.navigate('root')
+            const User = await firebase.auth()
+                .signInWithEmailAndPassword(email, password);
+            this.props.navigation.replace('root')
         }
-        catch (error) {
-            this.setState({ errorMessage: error.message })
-            console.log(this.state.errorMessage)
+        catch (erro) {
+            this.setState({ errorMessage: erro.message })
+            //console.log(this.state.errorMessage)
         }
     }
 
     render() {
-        LayoutAnimation.easeInEaseOut();
         return (
-            <EsconderTeclado>
+            <HideKeyboard>
                 <KeyboardAvoidingView style={styles.container} behavior='position' keyboardVerticalOffset={-140}>
                     <View>
                         <StatusBar hidden={true}></StatusBar>
                         <View>
-                            <Image style={styles.logo} resizeMode='center' source={require('../assets/images/logointro.png')} />
+                            <Image style={styles.logoContainer} resizeMode='center' source={require('../assets/images/logointro.png')} />
                         </View>
                         <View style={styles.errorContainer}>
-                            {this.state.errorMessage && <Text style={styles.error}>{this.state.errorMessage}</Text>}
+                            {this.state.errorMessage && <Text style={styles.errorText}>{this.state.errorMessage}</Text>}
                         </View>
                         <View>
                             <TextInput
                                 clearTextOnFocus={true}
-                                style={styles.entradaContainer}
+                                style={styles.emailPassContainer}
                                 placeholder='Email'
                                 placeholderTextColor='#B3B3B3'
                                 autoCapitalize='none'
@@ -55,36 +51,36 @@ export default class LoginScreen extends React.Component {
                                 value={this.state.email}
                             />
                             <TextInput
-                                style={styles.entradaContainer}
+                                style={styles.emailPassContainer}
                                 placeholder='Senha'
                                 placeholderTextColor='#B3B3B3'
                                 autoCapitalize='none'
                                 secureTextEntry returnKeyType='done'
-                                onChangeText={senha => this.setState({ senha })}
-                                value={this.state.senha}
+                                onChangeText={password => this.setState({ password })}
+                                value={this.state.password}
                             />
-                            <View style={styles.botoesContainer}>
-                                <TouchableOpacity onPress={this.verificaLogin}
-                                    style={styles.botaoEntrarContainer}>
-                                    <Text style={styles.TextoBotao}>Entrar</Text>
+                            <View style={styles.buttonsContainer}>
+                                <TouchableOpacity onPress={this.LoginVerify}
+                                    style={styles.loginButtonContainer}>
+                                    <Text style={styles.loginButtonText}>Entrar</Text>
                                 </TouchableOpacity>
                                 <View>
                                     <TouchableOpacity onPress={() => this.props.navigation.navigate('Cadastro')}
-                                        style={styles.botaoCContainer} >
-                                        <Text style={styles.TextoBotao2}>
-                                            Novo por aqui? <Text style={{ color: Color.roxomb }}>Cadastre-se!</Text></Text>
+                                        style={styles.registerTextContainer} >
+                                        <Text style={styles.registerButtonText2}>
+                                            Novo por aqui? <Text style={{fontWeight:'bold' ,color: Color.roxomb }}>Cadastre-se!</Text></Text>
                                     </TouchableOpacity>
                                 </View>
                             </View>
                         </View>
                     </View >
                 </KeyboardAvoidingView>
-            </EsconderTeclado>
+            </HideKeyboard>
         )
     }
 }
 
-const EsconderTeclado = ({ children }) => (
+const HideKeyboard = ({ children }) => (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         {children}
     </TouchableWithoutFeedback>
@@ -97,7 +93,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: Color.bgDefault,
     },
-    entradaContainer: {
+    emailPassContainer: {
         height: 40,
         width: 250,
         backgroundColor: '#FFFFFF',
@@ -109,30 +105,30 @@ const styles = StyleSheet.create({
         borderColor: Color.roxomb,
         borderRadius: 7
     },
-    botoesContainer: {
+    buttonsContainer: {
         marginTop: 5,
     },
-    botaoCContainer: {
+    registerButtonContainer: {
         marginTop: 5,
         marginRight: 4,
         height: 40,
         width: 250,
         borderRadius: 7
     },
-    botaoEntrarContainer: {
+    loginButtonContainer: {
         marginTop: 5,
         backgroundColor: '#000',
         height: 40,
         width: 250,
         borderRadius: 7
     },
-    errorContainer: {
-        marginTop:20,
+    registerTextContainer: {
+        marginTop: 20,
         width: 250,
         alignItems: 'center',
         justifyContent: 'center'
     },
-    logo: {
+    logoContainer: {
         alignContent: 'center',
         justifyContent: 'center',
         marginTop: 80,
@@ -140,7 +136,7 @@ const styles = StyleSheet.create({
         width: 220,
         height: 230
     },
-    TextoBotao: {
+    loginButtonText: {
         color: '#FFFFFF',
         alignSelf: 'center',
         paddingVertical: 12,
@@ -148,7 +144,7 @@ const styles = StyleSheet.create({
         fontSize: 15,
         alignItems: 'center'
     },
-    TextoBotao2: {
+    registerButtonText: {
         color: '#000',
         alignSelf: 'center',
         paddingVertical: 12,
@@ -156,7 +152,13 @@ const styles = StyleSheet.create({
         fontSize: 15,
         alignItems: 'center'
     },
-    error: {
+    errorContainer: {
+        marginTop:20,
+        width: 250,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    errorText: {
         marginTop: 2,
         marginBottom: 1,
         color: 'red',

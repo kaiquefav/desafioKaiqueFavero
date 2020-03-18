@@ -1,16 +1,10 @@
 import * as React from 'react';
-import Colors from './constants/Colors'
-import { StyleSheet, View } from 'react-native';
 import LoginScreen from './screens/LoginScreen';
-import CadastroScreen from './screens/CadastroScreen';
-import CadastroEventoScreen from './screens/CadastroEventoScreen';
-import HomeScreen from './screens/HomeScreen';
-import PerfilScreen from './screens/PerfilScreen';
-import DetalhesScreen from './screens/DetalhesScreen'
+import RegisterScreen from './screens/RegisterScreen'
+import DetailsScreen from './screens/DetailsScreen';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import BottomTabNavigator from './navigation/BottomTabNavigator';
-import { useNavigation } from '@react-navigation/native';
 import LoadingScreen from './screens/LoadingScreen';
 import * as firebase from 'firebase';
 
@@ -27,28 +21,21 @@ var firebaseConfig = {
 // Initialize Firebase
 if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
-  console.log("carregando firebase")
 }
 
-var database = firebase.database();
+const stack = createStackNavigator();
 
-
-const Stack = createStackNavigator();
-const Stack2 = createStackNavigator();
 
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="Loading" component={LoadingScreen} options={{ gestureEnabled: false, headerShown: false }} />
-        <Stack.Screen name="Login" component={LoginScreen} options={{ gestureEnabled: false, headerShown: false }} />
-        <Stack.Screen name="Cadastro" component={CadastroScreen} options={{ gestureEnabled: false, headerBackTitleVisible: false, headerTitleStyle: { fontWeight: '800', fontSize: 20, color: '#000' }, headerStyle: { backgroundColor: Colors.bgDefault }, headerBackTitleStyle: { color: '#FFF' } }} />
-        <Stack.Screen name="root" component={BottomTabNavigator} options={{ gestureEnabled: false, headerShown: false }} />
-        <Stack.Screen name="Detalhes" component={DetalhesScreen} options={{ gestureEnabled: false, headerBackTitleVisible: false, headerTitleStyle: { fontWeight: '800', fontSize: 20, color: '#000' }, headerStyle: { backgroundColor: Colors.bgDefault }, headerBackTitleStyle: { color: '#FFF' } }} />
-      </Stack.Navigator>
+      <stack.Navigator>
+        <stack.Screen name="Login" component={LoginScreen} options={{ gestureEnabled: false, headerShown: false }} />
+        <stack.Screen name="Loading" component={LoadingScreen} options={{ gestureEnabled: false, headerShown: false }} />
+        <stack.Screen name="Cadastro" component={RegisterScreen} options={{ gestureEnabled: false, headerLeftContainerStyle: { marginBottom: 10 }, headerBackTitleVisible: false, headerTitleStyle: { marginBottom: 10, fontWeight: '800', fontSize: 20, color: '#FFF' }, headerStyle: { height: 45, backgroundColor: "#000" }, headerBackTitleStyle: { color: '#FFF' } }} />
+        <stack.Screen name="root" component={BottomTabNavigator} options={{ headerLeft: null, gestureEnabled: false, headerLeftContainerStyle: { marginBottom: 10 }, headerBackTitleVisible: false, headerTitleStyle: { marginBottom: 10, fontWeight: '800', fontSize: 20, color: '#FFF' }, headerStyle: { height: 45, backgroundColor: "#000" }, headerBackTitleStyle: { color: '#FFF' } }} />
+        <stack.Screen name="Detalhes" component={DetailsScreen} options={{ gestureEnabled: false, headerLeftContainerStyle: { marginBottom: 10 }, headerBackTitleVisible: false, headerTitleStyle: { marginBottom: 10, fontWeight: '800', fontSize: 20, color: '#FFF' }, headerStyle: { height: 45, backgroundColor: "#000" }, headerBackTitleStyle: { color: '#FFF' } }} />
+      </stack.Navigator>
     </NavigationContainer>
   )
 }
-
-const styles = StyleSheet.create({
-});

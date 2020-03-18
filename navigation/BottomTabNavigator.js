@@ -2,8 +2,8 @@ import * as React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
-import PerfilScreen from '../screens/PerfilScreen';
-import CadastroEventoScreen from '../screens/CadastroEventoScreen';
+import ProfileScreen from '../screens/ProfileScreen';
+import EventRegisterScreen from '../screens/EventRegisterScreen';
 import Colors from '../constants/Colors';
 
 const BottomTab = createBottomTabNavigator();
@@ -27,7 +27,7 @@ export default function BottomTabNavigator({ navigation, route }) {
       }}>
       <BottomTab.Screen
         name="Perfil"
-        component={PerfilScreen}
+        component={ProfileScreen}
         options={{
           title: 'Perfil',
           tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="user" />,
@@ -43,7 +43,7 @@ export default function BottomTabNavigator({ navigation, route }) {
       />
       <BottomTab.Screen
         name="CadastroEvento"
-        component={CadastroEventoScreen}
+        component={EventRegisterScreen}
         options={{
           title: 'Cadastro de Eventos',
           tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="fa" />,

@@ -9,27 +9,27 @@ import Layout from '../constants/Layout'
 import App from '../App'
 
 
-export default class PerfilScreen extends React.Component {
+export default class ProfileScreen extends React.Component {
   constructor() {
     super();
 
     this.state = {
-      usuarios: [],
+      users: [],
       index: '',
       ready2: false,
     };
   }
 
-  getqteData() {
+  getQtData() {
     var aux;
-    let Current = this;
+    let current = this;
     //console.log(firebase.auth().currentUser.email)
     var ref = firebase.database().ref('users/')
     ref.on('value', snapshot => {
       aux = snapshot.numChildren()
-      if (this.state.usuarios.length == aux) {
+      if (this.state.users.length == aux) {
         this.getUserID()
-        Current.setState({ ready2: true })
+        current.setState({ ready2: true })
       }
       ;
     }
@@ -38,19 +38,19 @@ export default class PerfilScreen extends React.Component {
 
   componentWillMount() {
     let user = [];
-    let Current = this;
+    let current = this;
     var ref = firebase.database().ref('users/')
     ref.on('child_added', snapshot => {
       user.push({
         id: snapshot.key,
-        cidade: snapshot.val().cidade,
+        city: snapshot.val().city,
         cpf: snapshot.val().cpf,
         email: snapshot.val().email,
         //eventos: snapshot.val().eventos,
         name: snapshot.val().name,
       });
-      Current.setState({ usuarios: user })
-      this.getqteData()
+      current.setState({ users: user })
+      this.getQtData()
     }
     )
   }
@@ -61,8 +61,8 @@ export default class PerfilScreen extends React.Component {
     var newMail = firebase.auth().currentUser.email
     let userID = newMail.substring(0, newMail.indexOf('@')) //setando ID do usuário como começo do email.
     //console.log('user id: '+userID)
-    for (var i = 0; i < this.state.usuarios.length; i++) {
-      if (this.state.usuarios[i].id == userID) {
+    for (var i = 0; i < this.state.users.length; i++) {
+      if (this.state.users[i].id == userID) {
         this.setState({ index: i })
         return;
       }
@@ -73,25 +73,25 @@ export default class PerfilScreen extends React.Component {
 
   componentDidMount() {
     let user = [];
-    let Current = this;
+    let current = this;
     var ref = firebase.database().ref('users/')
     ref.on('child_added', snapshot => {
       user.push({
         id: snapshot.key,
-        cidade: snapshot.val().cidade,
+        city: snapshot.val().city,
         cpf: snapshot.val().cpf,
         email: snapshot.val().email,
         //eventos[]: snapshot.val().eventos[],
         name: snapshot.val().name,
       });
-      Current.setState({ usuarios: user })
-      this.getqteData()
+      current.setState({ users: user })
+      this.getQtData()
 
     })
   }
 
 
-  singOutUser = () => {
+  signOutUser = () => {
     firebase.auth().signOut
     this.props.navigation.replace('Login')
   }
@@ -100,8 +100,8 @@ export default class PerfilScreen extends React.Component {
 
     if (this.state.ready2 === true) {
 
-      const { usuarios } = this.state
-      console.log(this.state.usuarios[this.state.index].name)
+      const { users } = this.state
+      //console.log(this.state.users[this.state.index].name)
     }
     return (
 
@@ -109,16 +109,16 @@ export default class PerfilScreen extends React.Component {
         <SafeAreaView style={styles.container}>
           <StatusBar hidden={true}></StatusBar>
           <Image style={styles.logoContainer} resizeMode='center' source={require('../assets/images/logo.png')} />
-          <View style={styles.tituloContainer}><Text style={styles.titulo}>Perfil</Text></View>
+          <View style={styles.lineSeparate}><Text style={styles.infosText1}></Text></View>
           <ScrollView>
             <View style={{ marginTop: 12 }}>
-              <Text style={styles.textoCampo}>Nome:</Text><Text style={styles.textoInfo}>{this.state.usuarios[this.state.index].name}</Text>
-              <Text style={styles.textoCampo}>CPF:</Text><Text style={styles.textoInfo}>{this.state.usuarios[this.state.index].cpf}</Text>
-              <Text style={styles.textoCampo}>Email:</Text><Text style={styles.textoInfo}>{this.state.usuarios[this.state.index].email}</Text>
-              <Text style={styles.textoCampo}>Cidade:</Text><Text style={styles.textoInfo}>{this.state.usuarios[this.state.index].cidade}</Text>
-              {/* <Text style={styles.textoCampo}>Eventos Criados:</Text><Text style={styles.textoInfo}>{this.state.usuarios[this.state.index].eventos[]}</Text> */}
+              <Text style={styles.infosText1}>Nome:</Text><Text style={styles.infoText2}>{this.state.users[this.state.index].name}</Text>
+              <Text style={styles.infosText1}>CPF:</Text><Text style={styles.infoText2}>{this.state.users[this.state.index].cpf}</Text>
+              <Text style={styles.infosText1}>Email:</Text><Text style={styles.infoText2}>{this.state.users[this.state.index].email}</Text>
+              <Text style={styles.infosText1}>Cidade:</Text><Text style={styles.infoText2}>{this.state.users[this.state.index].city}</Text>
+              {/* <Text style={styles.textoCampo}>Eventos Criados:</Text><Text style={styles.infoText2}>{this.state.users[this.state.index].eventos[]}</Text> */}
             </View>
-            <View style={styles.containerSair}><TouchableOpacity style={styles.botaoSair} onPress={this.singOutUser}><Text style={styles.textoSair}>Sair</Text></TouchableOpacity></View>
+            <View style={styles.signOutContainer}><TouchableOpacity style={styles.signOutButton} onPress={this.signOutUser}><Text style={styles.signOutText}>Sair</Text></TouchableOpacity></View>
           </ScrollView>
         </SafeAreaView>
         : <ActivityIndicator style={styles.loadingContainer} size='large' />
@@ -132,21 +132,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.bgDefault,
   },
-  containerSair: {
+  signOutContainer: {
     alignContent: 'center',
     borderRadius: 8,
     borderColor: '#000',
   },
-  titulo: {
-    fontSize: 35,
-    fontWeight: '500',
-    alignSelf: 'center',
-    color: '#FFF',
-  },
-  tituloContainer: {
-    justifyContent: 'center',
-    alignContent: 'center',
+  lineSeparate: {
+    height: 0.5,
     backgroundColor: '#000',
+    marginTop: 5,
   },
   loadingContainer: {
     backgroundColor: Colors.bgDefault,
@@ -163,7 +157,14 @@ const styles = StyleSheet.create({
     height: 85,
     backgroundColor: Colors.bgDefault,
   },
-  botaoSair: {
+  infosText1: {
+    fontSize: 20,
+    marginLeft: 10,
+    marginBottom: 5,
+    color: '#000',
+    fontWeight: 'bold',
+  },
+  signOutButton: {
     backgroundColor: '#000',
     borderRadius: 8,
     alignSelf: 'center',
@@ -171,7 +172,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: 100
   },
-  textoSair: {
+  signOutText: {
     color: '#FFFFFF',
     alignSelf: 'center',
     paddingVertical: 12,
@@ -179,15 +180,10 @@ const styles = StyleSheet.create({
     fontSize: 15,
     alignItems: 'center'
   },
-  textoCampo: {
-    fontSize: 20,
-    marginBottom: 5,
-    color: '#000',
-    fontWeight: 'bold',
-  },
-  textoInfo: {
-    fontSize: 17,
+  infoText2: {
     marginBottom: 15,
+    marginLeft: 10,
+    fontSize: 17,
     color: '#000',
   },
 });
